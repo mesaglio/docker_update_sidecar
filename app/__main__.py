@@ -29,11 +29,6 @@ class ContainerActions(Resource):
         docker.DockerService.start_container(container_id)
         return {'success': True}
 
-    @handler_exception
-    def patch(self, container_id):
-        container = docker.DockerService.update_container_image(container_id, api.payload)
-        return {'container': container}
-
 @api.route('/container')
 class Containers(Resource):
     @handler_exception
@@ -44,6 +39,14 @@ class Containers(Resource):
         args = parser.parse_args()
         return {'containers': docker.DockerService.get_containers(args['only_running'],args['image_name'])}
     
+    @handler_exception
+    def patch(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('old_image', type=str, help='Image to update.', required=True)
+        args = parser.parse_args()
+        container = docker.DockerService.update_container_image(args['old_image'], api.payload)
+        return {'container': container}
+
     @handler_exception
     def post(self):
         result = docker.DockerService.run_container(api.payload)

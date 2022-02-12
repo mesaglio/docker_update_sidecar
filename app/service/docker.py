@@ -1,7 +1,7 @@
 import requests
 import docker
 from typing import Dict
-from app.errors.docker import ContainerNotFound, ErrorInContainer
+from app.errors.docker import ContainerNotFound, ErrorInContainer, ManyContainerWithImage
 from app.utils.bytes import parse_bytes
 
 from app.utils.decorators import handler_exception
@@ -44,14 +44,18 @@ class DockerService:
             raise ErrorInContainer(e.__str__())
     
     @classmethod
-    def update_container_image(cls, container_id, container_args):
+    def update_container_image(cls, old_image, container_args):
         try:
+            old_containers = cls.get_containers(True,old_image)
+            if len(old_containers) != 1:
+                raise ManyContainerWithImage("There are many containers with the image.")
+            old_container = old_containers[0]
             new_container = cls.run_container(container_args)
-            cls.stop_container(container_id)
-            cls.remove_container(container_id)
+            cls.stop_container(old_container['id'])
+            cls.remove_container(old_container['id'])
             return new_container
         except requests.exceptions.HTTPError:
-            raise ContainerNotFound(container_id)
+            raise ContainerNotFound(old_image)
 
     @classmethod
     def start_container(cls, container_id):

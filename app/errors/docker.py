@@ -12,3 +12,7 @@ class ImageNotFound(GenericException):
 class ErrorInContainer(GenericException):
     def __init__(self, error_msg) -> None:
         self.msg = error_msg
+
+class ManyContainerWithImage(GenericException):
+    def __init__(self, error_msg) -> None:
+        self.msg = error_msg
