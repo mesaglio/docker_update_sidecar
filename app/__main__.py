@@ -1,5 +1,5 @@
 from flask import Flask
-from flask_restx import Resource, Api
+from flask_restx import Resource, Api, reqparse
 from app.service import docker
 from app.utils.decorators import handler_exception
 
@@ -29,11 +29,19 @@ class ContainerActions(Resource):
         docker.DockerService.start_container(container_id)
         return {'success': True}
 
+    @handler_exception
+    def patch(self, container_id):
+        container = docker.DockerService.update_container_image(container_id, api.payload)
+        return {'container': container}
+
 @api.route('/container')
 class Containers(Resource):
     @handler_exception
     def get(self):
-        return {'containers': docker.DockerService.get_running_containers()}
+        parser = reqparse.RequestParser()
+        parser.add_argument('only_running', type=bool, help='Filter containers')
+        args = parser.parse_args()
+        return {'containers': docker.DockerService.get_containers(args['only_running'])}
     
     @handler_exception
     def post(self):

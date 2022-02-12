@@ -25,8 +25,8 @@ class DockerService:
         }
 
     @classmethod
-    def get_running_containers(cls):
-        containers = cls.__get_client__().containers.list(all=True)
+    def get_containers(cls, only_running=False):
+        containers = cls.__get_client__().containers.list(all=not only_running)
         containers = list(map(lambda container: cls.standar_container(container), containers))
         return containers
     
@@ -40,6 +40,16 @@ class DockerService:
         except Exception as e:
             raise ErrorInContainer(e.__str__())
     
+    @classmethod
+    def update_container_image(cls, container_id, container_args):
+        try:
+            new_container = cls.run_container(container_args)
+            cls.stop_container(container_id)
+            cls.remove_container(container_id)
+            return new_container
+        except requests.exceptions.HTTPError:
+            raise ContainerNotFound(container_id)
+
     @classmethod
     def start_container(cls, container_id):
         try:
