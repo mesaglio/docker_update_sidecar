@@ -3,7 +3,7 @@ from app.errors import GenericException
 
 class ContainerNotFound(GenericException):
     def __init__(self, container_id):
-        self.msg = f"Container with id: {container_id} not found."
+        self.msg = f"Container with id: '{container_id}' not found."
 
 class ImageNotFound(GenericException):
     def __init__(self, image_name):

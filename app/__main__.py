@@ -4,7 +4,14 @@ from app.service import docker
 from app.utils.decorators import handler_exception
 
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 api = Api(app)
+
+@api.route('/container/logs/<string:container_id>')
+class ContainerLogs(Resource):
+    @handler_exception
+    def get(self, container_id):
+        return docker.DockerService.get_logs(container_id)
 
 @api.route('/container/<string:container_id>')
 class ContainerActions(Resource):
@@ -34,4 +41,4 @@ class Containers(Resource):
         return {'result': result}
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0",port=8080,debug=False)
