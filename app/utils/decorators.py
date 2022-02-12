@@ -4,13 +4,13 @@ from app.errors import AppError, app_error_dumper
 
 from app.errors.docker import ContainerNotFound, ErrorInContainer
 
+
 def handler_exception(func):
-    
     @wraps(func)
     def wrapper(*args, **kwargs):
-        error_response, error_code = None,None
+        error_response, error_code = None, None
         try:
-            return func(*args,**kwargs)      
+            return func(*args, **kwargs)
         except ErrorInContainer as e:
             error_response = AppError(e.msg)
             error_code = 409
@@ -22,5 +22,5 @@ def handler_exception(func):
             error_response = AppError("Unhandle error")
             error_code = 500
         return app_error_dumper(error_response), error_code
-    
+
     return wrapper
