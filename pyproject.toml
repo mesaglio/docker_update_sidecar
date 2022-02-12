@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "docker_update_sidecard"
+name = "docker_update_sidecar"
 version = "0.1.0"
 description = ""
 authors = ["juan mesaglio <juan.mesaglio@gmail.com>"]
