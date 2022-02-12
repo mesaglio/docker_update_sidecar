@@ -39,9 +39,10 @@ class Containers(Resource):
     @handler_exception
     def get(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('only_running', type=bool, help='Filter containers')
+        parser.add_argument('only_running', type=bool, help='Filter containers by status.')
+        parser.add_argument('image_name', type=str, help='Filter containers by image.')
         args = parser.parse_args()
-        return {'containers': docker.DockerService.get_containers(args['only_running'])}
+        return {'containers': docker.DockerService.get_containers(args['only_running'],args['image_name'])}
     
     @handler_exception
     def post(self):

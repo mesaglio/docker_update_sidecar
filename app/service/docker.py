@@ -25,8 +25,11 @@ class DockerService:
         }
 
     @classmethod
-    def get_containers(cls, only_running=False):
-        containers = cls.__get_client__().containers.list(all=not only_running)
+    def get_containers(cls, only_running=False, image_name=''):
+        filter = None
+        if image_name:
+            filter = {'ancestor': image_name}
+        containers = cls.__get_client__().containers.list(all=not only_running, filters=filter)
         containers = list(map(lambda container: cls.standar_container(container), containers))
         return containers
     
@@ -80,7 +83,6 @@ class DockerService:
             return parse_bytes(cls.__get_container__(container_id).logs())
         except requests.exceptions.HTTPError:
             raise ContainerNotFound(container_id)
-
 
     @classmethod
     def get_container(cls, container_id):
