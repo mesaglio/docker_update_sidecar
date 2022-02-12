@@ -15,8 +15,8 @@ Sidecar para actualizar imagenes de containers remotamente.
 **Importante**: es importante montar el socket de docker para que el container tenga acceso al deamon del host.
 
 ```bash
-> docker build -t sidecar .
-> docker run -it -p8080:8080 -v /var/run/docker.sock:/var/run/docker.sock sidecar
+> docker build -t sidecar_api .
+> docker run -it -p8080:8080 -v /var/run/docker.sock:/var/run/docker.sock sidecar_api
 ```
 
 ## POC
@@ -28,3 +28,7 @@ Sidecar para actualizar imagenes de containers remotamente.
 
 - Mediante la api acutalizo el container y valido la imagen del nuevo container.
   ![result](img/results.png)
+
+## Consideraciones
+
+Los endpoint que permiten iniciar un nuevo container pueden recibir por body todo los campos que permite la funcion [run](https://docker-py.readthedocs.io/en/stable/containers.html#docker.models.containers.ContainerCollection.run) del sdk de Docker.

@@ -8,19 +8,21 @@ app.url_map.strict_slashes = False
 api = Api(
     app,
     version="1.0",
-    title="Container update apsidecar",
+    title="Container update api sidecar",
     description="A simple sidecar API to update containers images",
 )
 
+ns = api.namespace("container", description="Containers endpoints")
 
-@api.route("/container/logs/<string:container_id>")
+
+@ns.route("/logs/<string:container_id>")
 class ContainerLogs(Resource):
     @handler_exception
     def get(self, container_id):
         return docker.DockerService.get_logs(container_id)
 
 
-@api.route("/container/<string:container_id>")
+@ns.route("/<string:container_id>")
 class ContainerActions(Resource):
     @handler_exception
     def get(self, container_id):
@@ -37,9 +39,10 @@ class ContainerActions(Resource):
         return {"success": True}
 
 
-@api.route("/container")
+@ns.route("")
 class Containers(Resource):
     @handler_exception
+    @ns.doc("list_containers")
     def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument(
@@ -54,6 +57,7 @@ class Containers(Resource):
         }
 
     @handler_exception
+    @ns.param("old_image", "Image to update")
     def patch(self):
         parser = reqparse.RequestParser()
         parser.add_argument(
