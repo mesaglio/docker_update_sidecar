@@ -32,3 +32,4 @@ Sidecar para actualizar imagenes de containers remotamente.
 ## Consideraciones
 
 Los endpoint que permiten iniciar un nuevo container pueden recibir por body todo los campos que permite la funcion [run](https://docker-py.readthedocs.io/en/stable/containers.html#docker.models.containers.ContainerCollection.run) del sdk de Docker.
+
